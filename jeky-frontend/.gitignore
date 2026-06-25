@@ -1,0 +1,25 @@
+# Java / Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.log
+
+# Maven wrapper build cache
+.mvn/wrapper/maven-wrapper.jar
+
+# React / Node
+node_modules/
+dist/
+build/
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

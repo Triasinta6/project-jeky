@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Order Jeky</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .nav {
+            margin-bottom: 20px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        button, .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #111;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button.delete {
+            background: #c0392b;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #111;
+            color: white;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Admin Order Jeky</h1>
+
+<div class="nav">
+    <a th:href="@{/admin/layanan}" class="btn">Kelola Layanan</a>
+    <a th:href="@{/admin/orders}" class="btn">Daftar Order</a>
+</div>
+
+<div class="card">
+    <h2>Daftar Order</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Layanan</th>
+            <th>Customer</th>
+            <th>No HP</th>
+            <th>Alamat Jemput</th>
+            <th>Alamat Tujuan</th>
+            <th>Catatan</th>
+            <th>Status</th>
+            <th>Tanggal</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="item : ${orderList}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.layanan.nama}"></td>
+            <td th:text="${item.customerName}"></td>
+            <td th:text="${item.phoneNumber}"></td>
+            <td th:text="${item.pickupAddress}"></td>
+            <td th:text="${item.destinationAddress}"></td>
+            <td th:text="${item.note}"></td>
+            <td class="status" th:text="${item.status}"></td>
+            <td th:text="${item.createdAt}"></td>
+            <td>
+                <form th:action="@{/admin/orders/{id}/status(id=${item.id})}" method="post">
+                    <select name="status">
+                        <option value="WAITING" th:selected="${item.status == 'WAITING'}">WAITING</option>
+                        <option value="ACCEPTED" th:selected="${item.status == 'ACCEPTED'}">ACCEPTED</option>
+                        <option value="ON_PROGRESS" th:selected="${item.status == 'ON_PROGRESS'}">ON_PROGRESS</option>
+                        <option value="COMPLETED" th:selected="${item.status == 'COMPLETED'}">COMPLETED</option>
+                        <option value="CANCELLED" th:selected="${item.status == 'CANCELLED'}">CANCELLED</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+
+                <br>
+
+                <form th:action="@{/admin/orders/{id}/delete(id=${item.id})}" method="post">
+                    <button type="submit" class="delete">Hapus</button>
+                </form>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(orderList)}">
+            <td colspan="10">Belum ada order.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

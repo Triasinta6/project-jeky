@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Layanan Jeky</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #111;
+            color: white;
+            cursor: pointer;
+        }
+
+        button.delete {
+            background: #c0392b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #111;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Admin Layanan Jeky</h1>
+
+    <div class="card">
+        <h2>Tambah Layanan</h2>
+
+        <form th:action="@{/admin/layanan}" th:object="${layanan}" method="post">
+            <label>Nama Layanan</label>
+            <input type="text" th:field="*{nama}" placeholder="Contoh: Jeky Ride" required>
+
+            <label>Deskripsi</label>
+            <textarea th:field="*{deskripsi}" placeholder="Contoh: Layanan antar jemput motor"></textarea>
+
+            <label>Harga Dasar</label>
+            <input type="number" th:field="*{hargaDasar}" placeholder="Contoh: 8000">
+
+            <label>
+                <input type="checkbox" th:field="*{aktif}" style="width:auto;">
+                Aktif
+            </label>
+
+            <br><br>
+            <button type="submit">Simpan</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Daftar Layanan</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Deskripsi</th>
+                    <th>Harga Dasar</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="item : ${layananList}">
+                    <td th:text="${item.id}"></td>
+                    <td th:text="${item.nama}"></td>
+                    <td th:text="${item.deskripsi}"></td>
+                    <td th:text="${item.hargaDasar}"></td>
+                    <td th:text="${item.aktif ? 'Aktif' : 'Nonaktif'}"></td>
+                    <td>
+                        <form th:action="@{/admin/layanan/{id}/edit(id=${item.id})}" method="post">
+                            <button type="submit" class="edit">Edit</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/layanan/{id}/delete(id=${item.id})}" method="post">
+                            <button type="submit" class="delete">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
