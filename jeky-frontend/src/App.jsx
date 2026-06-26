@@ -8,7 +8,6 @@ function App() {
     <div className="admin-shell">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <div className="brand-logo">J</div>
           <span>Jeky 2026</span>
         </div>
 

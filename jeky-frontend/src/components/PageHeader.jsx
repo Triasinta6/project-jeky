@@ -1,13 +1,22 @@
-function PageHeader({ kicker, title, description }) {
+import { Link } from "react-router-dom";
+
+function PageHeader({ kicker, title, description, breadcrumb }) {
   return (
-    <header className="topbar">
+    <div className="page-header">
       <div>
-        <p className="page-kicker">{kicker}</p>
+        {kicker && <p className="page-kicker">{kicker}</p>}
         <h1>{title}</h1>
-        <p>{description}</p>
+        {description && <p className="page-description">{description}</p>}
       </div>
-      <span className="admin-chip">Admin</span>
-    </header>
+
+      {breadcrumb && (
+        <div className="page-breadcrumb">
+          <Link to={breadcrumb.parentPath}>{breadcrumb.parentLabel}</Link>
+          <span>/</span>
+          <span>{breadcrumb.currentLabel}</span>
+        </div>
+      )}
+    </div>
   );
 }
 
