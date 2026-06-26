@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import api from "../api";
+import PageHeader from "../components/PageHeader";
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -35,35 +36,34 @@ function Dashboard() {
 
   const statusChartData = stats
     ? [
-        { name: "Waiting", total: stats.waitingOrder ?? 0 },
-        { name: "Accepted", total: stats.acceptedOrder ?? 0 },
-        { name: "On Progress", total: stats.onProgressOrder ?? 0 },
-        { name: "Completed", total: stats.completedOrder ?? 0 },
-        { name: "Cancelled", total: stats.cancelledOrder ?? 0 },
-      ]
+      { name: "Waiting", total: stats.waitingOrder ?? 0 },
+      { name: "Accepted", total: stats.acceptedOrder ?? 0 },
+      { name: "On Progress", total: stats.onProgressOrder ?? 0 },
+      { name: "Completed", total: stats.completedOrder ?? 0 },
+      { name: "Cancelled", total: stats.cancelledOrder ?? 0 },
+    ]
     : [];
 
   const dailyChartData = stats
     ? [
-        {
-          tanggal: startDate,
-          layanan: stats.totalLayanan ?? 0,
-          order: stats.totalOrder ?? 0,
-        },
-      ]
+      {
+        tanggal: startDate,
+        layanan: stats.totalLayanan ?? 0,
+        order: stats.totalOrder ?? 0,
+      },
+    ]
     : [];
 
   return (
     <>
-      <div className="dashboard-title-row">
-        <div>
-          <h1>Dashboard Jeky</h1>
-        </div>
-
-        <div className="breadcrumb">
-          Dashboard / Overview
-        </div>
-      </div>
+      <PageHeader
+        title="Dashboard Jeky"
+        breadcrumb={{
+          parentPath: "/",
+          parentLabel: "Dashboard",
+          currentLabel: "Overview",
+        }}
+      />
 
       <section className="filter-card">
         <h3>Filter Periode</h3>

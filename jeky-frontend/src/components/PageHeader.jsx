@@ -11,9 +11,19 @@ function PageHeader({ kicker, title, description, breadcrumb }) {
 
       {breadcrumb && (
         <div className="page-breadcrumb">
-          <Link to={breadcrumb.parentPath}>{breadcrumb.parentLabel}</Link>
+          <Link to={breadcrumb.parentPath}>
+            {breadcrumb.parentLabel}
+          </Link>
+
           <span>/</span>
-          <span>{breadcrumb.currentLabel}</span>
+
+          {breadcrumb.currentPath ? (
+            <Link to={breadcrumb.currentPath}>
+              {breadcrumb.currentLabel}
+            </Link>
+          ) : (
+            <span>{breadcrumb.currentLabel}</span>
+          )}
         </div>
       )}
     </div>
