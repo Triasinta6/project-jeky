@@ -3,6 +3,8 @@ package com.jeky.backend.controller;
 import com.jeky.backend.model.Layanan;
 import com.jeky.backend.repository.LayananRepository;
 import jakarta.validation.Valid;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class LayananController {
         this.layananRepository = layananRepository;
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'OPERATOR')")
     @GetMapping
     public List<Layanan> getAllLayanan() {
         return layananRepository.findAll();
@@ -27,6 +30,7 @@ public class LayananController {
         return layananRepository.findByAktifTrue();
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @PostMapping
     public Layanan createLayanan(@Valid @RequestBody Layanan layanan) {
         return layananRepository.save(layanan);
@@ -38,6 +42,7 @@ public class LayananController {
                 .orElseThrow(() -> new RuntimeException("Layanan tidak ditemukan"));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @PutMapping("/{id}")
     public Layanan updateLayanan(@PathVariable Long id, @Valid @RequestBody Layanan request) {
         Layanan layanan = layananRepository.findById(id)
@@ -51,6 +56,7 @@ public class LayananController {
         return layananRepository.save(layanan);
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public String deleteLayanan(@PathVariable Long id) {
         layananRepository.deleteById(id);

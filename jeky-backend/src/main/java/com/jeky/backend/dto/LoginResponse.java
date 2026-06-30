@@ -3,13 +3,15 @@ package com.jeky.backend.dto;
 public class LoginResponse {
 
     private String message;
+    private String token;
     private Long id;
     private String name;
     private String email;
     private String role;
 
-    public LoginResponse(String message, Long id, String name, String email, String role) {
+    public LoginResponse(String message, String token, Long id, String name, String email, String role) {
         this.message = message;
+        this.token = token;
         this.id = id;
         this.name = name;
         this.email = email;
@@ -18,6 +20,10 @@ public class LoginResponse {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public Long getId() {

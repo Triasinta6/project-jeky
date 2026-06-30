@@ -4,9 +4,12 @@ import com.jeky.backend.dto.LoginRequest;
 import com.jeky.backend.dto.LoginResponse;
 import com.jeky.backend.model.AdminUser;
 import com.jeky.backend.repository.AdminUserRepository;
+import com.jeky.backend.service.Jwt;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import java.util.Map;
 
 import java.util.Optional;
 
@@ -17,10 +20,15 @@ public class AuthController {
 
     private final AdminUserRepository adminUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Jwt jwt;
 
-    public AuthController(AdminUserRepository adminUserRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(
+            AdminUserRepository adminUserRepository,
+            PasswordEncoder passwordEncoder,
+            Jwt jwt) {
         this.adminUserRepository = adminUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwt = jwt;
     }
 
     @PostMapping("/login")
@@ -43,13 +51,37 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Password salah");
         }
 
+        String token = jwt.generateToken(admin);
+
         LoginResponse response = new LoginResponse(
                 "Login berhasil",
+                token,
                 admin.getId(),
                 admin.getName(),
                 admin.getEmail(),
                 admin.getRole().name());
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        Optional<AdminUser> optionalAdmin = adminUserRepository.findByEmail(authentication.getName());
+
+        if (optionalAdmin.isEmpty()) {
+            return ResponseEntity.status(401).body("User tidak ditemukan");
+        }
+
+        AdminUser admin = optionalAdmin.get();
+
+        return ResponseEntity.ok(Map.of(
+                "id", admin.getId(),
+                "name", admin.getName(),
+                "email", admin.getEmail(),
+                "role", admin.getRole().name()));
     }
 }
