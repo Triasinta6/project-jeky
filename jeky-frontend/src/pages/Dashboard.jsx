@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import api from "../api";
+import api from "../api/api";
 import PageHeader from "../components/PageHeader";
 
 function Dashboard() {

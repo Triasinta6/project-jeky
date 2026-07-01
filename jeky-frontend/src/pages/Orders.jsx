@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api";
+import api from "../api/api";
 import PageHeader from "../components/PageHeader";
 
 const statuses = ["WAITING", "ACCEPTED", "ON_PROGRESS", "COMPLETED", "CANCELLED"];

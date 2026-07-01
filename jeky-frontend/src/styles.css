@@ -1008,3 +1008,25 @@ thead th {
   background: #fee2e2;
   color: #991b1b;
 }
+
+.sidebar-logout {
+  width: 100%;
+  display: block;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-logout:active {
+  transform: scale(0.99);
+}
