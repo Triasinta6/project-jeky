@@ -1009,24 +1009,70 @@ thead th {
   color: #991b1b;
 }
 
+.sidebar-nav a,
 .sidebar-logout {
   width: 100%;
   display: block;
   padding: 12px 14px;
-  border: none;
-  border-radius: 10px;
+  border-radius: 8px;
+  color: #1f2937;
+  text-decoration: none;
   background: transparent;
-  color: inherit;
+  border: none;
   font: inherit;
   text-align: left;
   cursor: pointer;
-  text-decoration: none;
+  transition: 0.2s ease;
 }
 
+.sidebar-nav a:hover,
 .sidebar-logout:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: #1677ff;
+  color: #ffffff;
 }
 
-.sidebar-logout:active {
-  transform: scale(0.99);
+.sidebar-nav a.active {
+  background: #1677ff;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Sidebar menu spacing fix */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-nav a,
+.sidebar-logout {
+  width: 100%;
+  display: block;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #1f2937;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sidebar-nav a:hover,
+.sidebar-logout:hover {
+  background: #1677ff;
+  color: #ffffff;
+}
+
+.sidebar-nav a.active {
+  background: #1677ff;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sidebar-logout {
+  margin-top: 8px;
 }
