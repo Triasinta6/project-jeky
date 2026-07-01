@@ -1,37 +1,23 @@
 package com.jeky.backend.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.jeky.backend.dto.DashboardStatsResponse;
+import com.jeky.backend.service.DashboardService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jeky.backend.repository.LayananRepository;
-import com.jeky.backend.repository.OrderJekyRepository;
-
 @RestController
+@RequestMapping("/api/dashboard")
 public class DashboardApiController {
+    private final DashboardService dashboardService;
 
-    private final OrderJekyRepository orderJekyRepository;
-    private final LayananRepository layananRepository;
-
-    public DashboardApiController(OrderJekyRepository orderJekyRepository, LayananRepository layananRepository) {
-        this.orderJekyRepository = orderJekyRepository;
-        this.layananRepository = layananRepository;
+    public DashboardApiController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
     }
 
-    @GetMapping("/api/dashboard/stats")
-    public Map<String, Long> getDashboardStats() {
-        Map<String, Long> stats = new HashMap<>();
-
-        stats.put("totalLayanan", layananRepository.count());
-        stats.put("totalOrder", orderJekyRepository.count());
-        stats.put("waitingOrder", orderJekyRepository.countByStatus("WAITING"));
-        stats.put("acceptedOrder", orderJekyRepository.countByStatus("ACCEPTED"));
-        stats.put("onProgressOrder", orderJekyRepository.countByStatus("ON_PROGRESS"));
-        stats.put("completedOrder", orderJekyRepository.countByStatus("COMPLETED"));
-        stats.put("cancelledOrder", orderJekyRepository.countByStatus("CANCELLED"));
-
-        return stats;
+    @GetMapping("/stats")
+    public ResponseEntity<DashboardStatsResponse> getDashboardStats() {
+        return ResponseEntity.ok(dashboardService.getStats());
     }
 }

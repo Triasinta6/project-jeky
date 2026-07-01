@@ -1,7 +1,12 @@
 package com.jeky.backend.controller;
 
-import java.util.List;
-
+import com.jeky.backend.dto.CreateOrderRequest;
+import com.jeky.backend.dto.MessageResponse;
+import com.jeky.backend.dto.OrderResponse;
+import com.jeky.backend.dto.UpdateOrderStatusRequest;
+import com.jeky.backend.service.OrderService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,66 +17,49 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jeky.backend.dto.CreateOrderRequest;
-import com.jeky.backend.model.Layanan;
-import com.jeky.backend.model.Order;
-import com.jeky.backend.repository.LayananRepository;
-import com.jeky.backend.repository.OrderJekyRepository;
-
-import jakarta.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
+    private final OrderService orderService;
 
-    private final OrderJekyRepository orderJekyRepository;
-    private final LayananRepository layananRepository;
-
-    public OrderController(OrderJekyRepository orderJekyRepository, LayananRepository layananRepository) {
-        this.orderJekyRepository = orderJekyRepository;
-        this.layananRepository = layananRepository;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping
-    public List<Order> getAllOrders() {
-        return orderJekyRepository.findAll();
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @GetMapping("/waiting")
-    public List<Order> getWaitingOrders() {
-        return orderJekyRepository.findByStatus("WAITING");
+    public ResponseEntity<List<OrderResponse>> getWaitingOrders() {
+        return ResponseEntity.ok(orderService.getWaitingOrders());
     }
 
     @PostMapping
-    public Order createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        Layanan layanan = layananRepository.findById(request.getLayananId())
-                .orElseThrow(() -> new RuntimeException("Layanan tidak ditemukan"));
-
-        Order order = new Order();
-        order.setLayanan(layanan);
-        order.setCustomerName(request.getCustomerName());
-        order.setPhoneNumber(request.getPhoneNumber());
-        order.setPickupAddress(request.getPickupAddress());
-        order.setDestinationAddress(request.getDestinationAddress());
-        order.setNote(request.getNote());
-        order.setStatus("WAITING");
-
-        return orderJekyRepository.save(order);
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+        return ResponseEntity.ok(orderService.create(request));
     }
 
     @PutMapping("/{id}/status")
-    public Order updateStatus(@PathVariable Long id, @RequestParam String status) {
-        Order order = orderJekyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order tidak ditemukan"));
+    public ResponseEntity<OrderResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam(required = false) String status,
+            @RequestBody(required = false) UpdateOrderStatusRequest request
+    ) {
+        UpdateOrderStatusRequest updateRequest = request == null ? new UpdateOrderStatusRequest() : request;
+        if (updateRequest.getStatus() == null) {
+            updateRequest.setStatus(status);
+        }
 
-        order.setStatus(status);
-
-        return orderJekyRepository.save(order);
+        return ResponseEntity.ok(orderService.updateStatus(id, updateRequest));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteOrder(@PathVariable Long id) {
-        orderJekyRepository.deleteById(id);
-        return "Order berhasil dihapus";
+    public ResponseEntity<MessageResponse> deleteOrder(@PathVariable Long id) {
+        orderService.delete(id);
+        return ResponseEntity.ok(new MessageResponse("Order berhasil dihapus"));
     }
 }

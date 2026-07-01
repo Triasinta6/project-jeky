@@ -1,0 +1,7 @@
+export const ORDER_STATUSES = [
+  "WAITING",
+  "ACCEPTED",
+  "ON_PROGRESS",
+  "COMPLETED",
+  "CANCELLED",
+];

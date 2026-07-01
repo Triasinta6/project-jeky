@@ -1,13 +1,13 @@
 package com.jeky.backend.repository;
 
-import java.util.List;
-
+import com.jeky.backend.enums.OrderStatus;
+import com.jeky.backend.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.jeky.backend.model.Order;
+import java.util.List;
 
 public interface OrderJekyRepository extends JpaRepository<Order, Long> {
+    List<Order> findByStatus(OrderStatus status);
 
-    List<Order> findByStatus(String status);
-    long countByStatus(String status);
+    long countByStatus(OrderStatus status);
 }

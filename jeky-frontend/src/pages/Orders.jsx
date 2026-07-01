@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import api from "../api";
+import api from "../api/api";
 import PageHeader from "../components/PageHeader";
-
-const statuses = ["WAITING", "ACCEPTED", "ON_PROGRESS", "COMPLETED", "CANCELLED"];
+import { ORDER_STATUSES } from "../constants/orderStatuses";
+import { formatStatus, getApiErrorMessage } from "../utils/formatters";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -48,15 +48,15 @@ function Orders() {
     setError("");
 
     try {
-      await api.put(`/orders/${selectedOrder.id}/status`, null, {
-        params: { status: selectedStatus },
+      await api.put(`/orders/${selectedOrder.id}/status`, {
+        status: selectedStatus,
       });
 
       setMessage("Status order berhasil diupdate.");
       closeStatusModal();
       loadOrders();
-    } catch (err) {
-      setError("Gagal update status order.");
+    } catch (error) {
+      setError(getApiErrorMessage(error, "Gagal update status order."));
     }
   };
 
@@ -69,8 +69,8 @@ function Orders() {
       await api.delete(`/orders/${id}`);
       setMessage("Order berhasil dihapus.");
       loadOrders();
-    } catch (err) {
-      setError("Gagal hapus order.");
+    } catch (error) {
+      setError(getApiErrorMessage(error, "Gagal hapus order."));
     }
   };
 
@@ -199,7 +199,7 @@ function Orders() {
                   value={selectedStatus}
                   onChange={(event) => setSelectedStatus(event.target.value)}
                 >
-                  {statuses.map((status) => (
+                  {ORDER_STATUSES.map((status) => (
                     <option key={status} value={status}>
                       {formatStatus(status)}
                     </option>
@@ -231,15 +231,6 @@ function badgeClass(status) {
   if (status === "COMPLETED") return "badge-done";
   if (status === "CANCELLED") return "badge-cancel";
   return "badge-inactive";
-}
-
-function formatStatus(status) {
-  if (!status) return "-";
-
-  return status
-    .replace("_", " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function EditIcon() {
