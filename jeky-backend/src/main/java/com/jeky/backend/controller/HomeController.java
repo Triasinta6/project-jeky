@@ -1,17 +1,19 @@
 package com.jeky.backend.controller;
 
+import com.jeky.backend.dto.MessageResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
     @GetMapping("/")
-    public String home() {
-        return "Jeky Backend is running";
+    public ResponseEntity<MessageResponse> home() {
+        return ResponseEntity.ok(new MessageResponse("Jeky Backend is running"));
     }
 
     @GetMapping("/api/health")
-    public String health() {
-        return "OK";
+    public ResponseEntity<MessageResponse> health() {
+        return ResponseEntity.ok(new MessageResponse("OK"));
     }
 }

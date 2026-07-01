@@ -1,8 +1,10 @@
 package com.jeky.backend.model;
 
-import java.time.LocalDateTime;
-
+import com.jeky.backend.enums.OrderStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "data_order")
@@ -34,22 +38,22 @@ public class Order {
 
     private String note;
 
-    private String status = "WAITING";
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status = OrderStatus.WAITING;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "layanan_id", nullable = false)
     private Layanan layanan;
 
-    public Order() {
-    }
-
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         if (this.status == null) {
-            this.status = "WAITING";
+            this.status = OrderStatus.WAITING;
         }
     }
 
@@ -77,7 +81,7 @@ public class Order {
         return note;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
@@ -113,7 +117,7 @@ public class Order {
         this.note = note;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

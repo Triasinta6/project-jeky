@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import api from "../api";
+import api from "../api/api";
 import PageHeader from "../components/PageHeader";
+import { formatRupiah, getApiErrorMessage } from "../utils/formatters";
 
 const emptyForm = {
   nama: "",
@@ -94,8 +95,8 @@ function Layanan() {
 
       closeModal();
       loadLayanan();
-    } catch (err) {
-      setError("Gagal simpan layanan. Cek kembali inputan data.");
+    } catch (error) {
+      setError(getApiErrorMessage(error, "Gagal simpan layanan. Cek kembali inputan data."));
     }
   };
 
@@ -109,8 +110,8 @@ function Layanan() {
       await api.delete(`/layanan/${id}`);
       setMessage("Layanan berhasil dihapus.");
       loadLayanan();
-    } catch (err) {
-      setError("Gagal hapus layanan. Bisa jadi layanan masih dipakai order.");
+    } catch (error) {
+      setError(getApiErrorMessage(error, "Gagal hapus layanan. Bisa jadi layanan masih dipakai order."));
     }
   };
 
@@ -270,14 +271,6 @@ function Layanan() {
       )}
     </>
   );
-}
-
-function formatRupiah(value) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value || 0);
 }
 
 function EditIcon() {

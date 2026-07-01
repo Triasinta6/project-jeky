@@ -1,39 +1,28 @@
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import AdminLayout from "./layout/AdminLayout.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Layanan from "./pages/Layanan.jsx";
+import Login from "./pages/Login.jsx";
 import Orders from "./pages/Orders.jsx";
+
+function ProtectedPage({ children }) {
+  return (
+    <ProtectedRoute>
+      <AdminLayout>{children}</AdminLayout>
+    </ProtectedRoute>
+  );
+}
 
 function App() {
   return (
-    <div className="admin-shell">
-      <aside className="sidebar">
-        <div className="sidebar-brand">
-          <span>Jeky 2026</span>
-        </div>
-
-        <div className="profile-box">
-          <div className="profile-photo">A</div>
-          <div>
-            <p className="profile-name">Admin</p>
-            <p className="profile-role">Administrator</p>
-          </div>
-        </div>
-
-        <nav className="sidebar-nav">
-          <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/layanan">Layanan</NavLink>
-          <NavLink to="/orders">Orders</NavLink>
-        </nav>
-      </aside>
-
-      <main className="main">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/layanan" element={<Layanan />} />
-          <Route path="/orders" element={<Orders />} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
+      <Route path="/layanan" element={<ProtectedPage><Layanan /></ProtectedPage>} />
+      <Route path="/orders" element={<ProtectedPage><Orders /></ProtectedPage>} />
+    </Routes>
   );
 }
 
