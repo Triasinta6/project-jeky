@@ -33,10 +33,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<AdminUser> optionalAdmin = adminUserRepository.findByEmail(request.getEmail());
+        Optional<AdminUser> optionalAdmin = adminUserRepository.findByUsername(request.getUsername());
 
         if (optionalAdmin.isEmpty()) {
-            return ResponseEntity.badRequest().body("Email tidak ditemukan");
+            return ResponseEntity.badRequest().body("Username tidak ditemukan");
         }
 
         AdminUser admin = optionalAdmin.get();
@@ -57,7 +57,7 @@ public class AuthController {
                 "Login berhasil",
                 token,
                 admin.getId(),
-                admin.getName(),
+                admin.getUsername(),
                 admin.getEmail(),
                 admin.getRole().name());
 
@@ -70,7 +70,7 @@ public class AuthController {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
-        Optional<AdminUser> optionalAdmin = adminUserRepository.findByEmail(authentication.getName());
+        Optional<AdminUser> optionalAdmin = adminUserRepository.findByUsername(authentication.getName());
 
         if (optionalAdmin.isEmpty()) {
             return ResponseEntity.status(401).body("User tidak ditemukan");
@@ -80,7 +80,7 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of(
                 "id", admin.getId(),
-                "name", admin.getName(),
+                "name", admin.getUsername(),
                 "email", admin.getEmail(),
                 "role", admin.getRole().name()));
     }

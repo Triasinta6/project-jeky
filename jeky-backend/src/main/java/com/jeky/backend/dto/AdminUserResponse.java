@@ -11,7 +11,7 @@ public class AdminUserResponse {
 
     public AdminUserResponse(AdminUser adminUser) {
         this.id = adminUser.getId();
-        this.name = adminUser.getName();
+        this.name = adminUser.getUsername();
         this.email = adminUser.getEmail();
         this.role = adminUser.getRole().name();
         this.isActive = adminUser.getIsActive();

@@ -40,9 +40,9 @@ public class AdminUserController {
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> createAdminUser(@RequestBody CreateAdminUserRequest request) {
-        if (adminUserRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (adminUserRepository.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body(Map.of(
-                    "message", "Email admin sudah digunakan"));
+                    "message", "Username admin sudah digunakan"));
         }
 
         Role role;
@@ -55,7 +55,7 @@ public class AdminUserController {
         }
 
         AdminUser adminUser = new AdminUser();
-        adminUser.setName(request.getName());
+        adminUser.setUsername(request.getUsername());
         adminUser.setEmail(request.getEmail());
         adminUser.setPassword(passwordEncoder.encode(request.getPassword()));
         adminUser.setRole(role);

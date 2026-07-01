@@ -24,10 +24,10 @@ function AdminLayout({ children }) {
 
         <div className="profile-box">
           <div className="profile-photo">
-            {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
+            {user?.username ? user.username.charAt(0).toUpperCase() : "A"}
           </div>
           <div>
-            <p className="profile-name">{user?.name || "Admin"}</p>
+            <p className="profile-name">{user?.username || "Admin"}</p>
             <p className="profile-role">{user?.role || "Administrator"}</p>
           </div>
         </div>

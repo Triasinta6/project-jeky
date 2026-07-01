@@ -6,7 +6,7 @@ function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    const [email, setEmail] = useState("");
+    const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ function Login() {
         setLoading(true);
 
         try {
-            await login(email, password);
+            await login(username, password);
             navigate("/dashboard");
         } catch (err) {
             console.log(err);
@@ -42,13 +42,13 @@ function Login() {
 
                 <form onSubmit={handleSubmit}>
                     <div style={styles.formGroup}>
-                        <label style={styles.label}>Email</label>
+                        <label style={styles.label}>Username</label>
                         <input
                             style={styles.input}
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="admin@jeky.com"
+                            type="username"
+                            value={username}
+                            onChange={(e) => setUserName(e.target.value)}
+                            placeholder="Masukkan username"
                         />
                     </div>
 

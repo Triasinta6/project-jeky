@@ -44,10 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String token = authHeader.substring(7);
-            String email = jwt.extractEmail(token);
+            String username = jwt.extractUsername(token);
 
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                Optional<AdminUser> optionalAdmin = adminUserRepository.findByEmail(email);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                Optional<AdminUser> optionalAdmin = adminUserRepository.findByUsername(username);
 
                 if (optionalAdmin.isPresent()) {
                     AdminUser admin = optionalAdmin.get();
@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 new SimpleGrantedAuthority("ROLE_" + admin.getRole().name()));
 
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                                admin.getEmail(),
+                                admin.getUsername(),
                                 null,
                                 authorities);
 
