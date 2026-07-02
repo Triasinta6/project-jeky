@@ -658,13 +658,14 @@ td.wrap {
   font-size: 28px;
 }
 
-.login-card > p {
+.login-card>p {
   margin: 8px 0 24px;
   color: #6b7280;
   font-size: 14px;
 }
 
 @media (max-width: 1000px) {
+
   .admin-shell,
   .summary-grid.two-card,
   .chart-grid {
@@ -699,4 +700,30 @@ td.wrap {
   .modal-card {
     max-width: 100%;
   }
+}
+
+.filter-card {
+  position: relative;
+  z-index: 10;
+}
+
+.filter-row {
+  position: relative;
+  z-index: 11;
+}
+
+.btn-filter {
+  height: 41px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 22px;
+  background: #003b70;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.btn-filter:hover {
+  background: #0d6efd;
 }

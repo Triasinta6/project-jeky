@@ -17,21 +17,42 @@ import PageHeader from "../components/PageHeader";
 function Dashboard() {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState("");
-  const [startDate, setStartDate] = useState("2026-06-25");
-  const [endDate, setEndDate] = useState("2026-06-25");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     loadDashboard();
   }, []);
 
-  function loadDashboard() {
+  function loadDashboard(params = {}) {
     setError("");
 
-    api.get("/dashboard/stats")
+    api.get("/dashboard/stats", { params })
       .then((response) => setStats(response.data))
       .catch(() => {
         setError("Gagal ambil data dashboard.");
       });
+  }
+
+  function handleFilter(event) {
+    event.preventDefault();
+
+    console.log("Filter diklik", { startDate, endDate });
+
+    if (!startDate || !endDate) {
+      setError("Tanggal mulai dan tanggal selesai wajib dipilih.");
+      return;
+    }
+
+    if (startDate > endDate) {
+      setError("Tanggal mulai tidak boleh lebih besar dari tanggal selesai.");
+      return;
+    }
+
+    loadDashboard({
+      startDate,
+      endDate,
+    });
   }
 
   const statusChartData = stats
@@ -68,7 +89,7 @@ function Dashboard() {
       <section className="filter-card">
         <h3>Filter Periode</h3>
 
-        <div className="filter-row">
+        <form className="filter-row" onSubmit={handleFilter}>
           <div className="filter-group">
             <label>Mulai Tanggal</label>
             <input
@@ -87,8 +108,10 @@ function Dashboard() {
             />
           </div>
 
-          <button onClick={loadDashboard}>Filter</button>
-        </div>
+          <button type="submit" className="btn-filter">
+            Filter
+          </button>
+        </form>
       </section>
 
       {error && <div className="alert alert-danger">{error}</div>}
