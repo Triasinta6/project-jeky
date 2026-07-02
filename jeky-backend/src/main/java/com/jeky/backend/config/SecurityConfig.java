@@ -25,8 +25,7 @@ public class SecurityConfig {
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            @Value("${app.cors.allowed-origins}") List<String> allowedOrigins
-    ) {
+            @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.allowedOrigins = allowedOrigins;
     }
@@ -42,8 +41,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/", "/api/health", "/api/auth/login").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers(HttpMethod.GET, "/api/layanan/aktif").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
