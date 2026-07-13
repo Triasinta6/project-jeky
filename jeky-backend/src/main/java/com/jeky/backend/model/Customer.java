@@ -22,27 +22,28 @@ public class Customer {
     private String name;
 
     @Email
-    @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @NotBlank
-    @Column(nullable = false)
+    @Column(name = "no_hp")
     private String noHp;
 
     private String address;
 
     private Boolean aktif = true ;
 
+    private String password;
+
     public Customer() {
     }
 
-    public Customer(String name, String email, String noHp, String address, Boolean aktif) {
+    public Customer(String name, String email, String noHp, String address, Boolean aktif, String password) {
         this.name = name;
         this.email = email;
         this.noHp = noHp;
         this.address = address;
         this.aktif = aktif;
+        this.password = password;
     }
 
     public Long getId() {
@@ -69,6 +70,10 @@ public class Customer {
         return aktif;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -91,5 +96,9 @@ public class Customer {
 
     public void setAktif(Boolean aktif) {
         this.aktif = aktif;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

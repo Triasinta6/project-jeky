@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/api/health", "/api/auth/login").permitAll()
+                        .requestMatchers("/", "/api/health", "/api/auth/login", "/api/mobile/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/layanan/aktif").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
                         .anyRequest().authenticated())
