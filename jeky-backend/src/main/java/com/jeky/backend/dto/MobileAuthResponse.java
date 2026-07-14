@@ -7,14 +7,16 @@ public class MobileAuthResponse {
     private String name;
     private String email;
     private String noHp;
+    private String token;
 
     public MobileAuthResponse() {
     }
 
-    public MobileAuthResponse(boolean success, String message, Long customerId, String name, String email,
+    public MobileAuthResponse(boolean success, String message, String token, Long customerId, String name, String email,
             String noHp) {
         this.success = success;
         this.message = message;
+        this.token = token;
         this.customerId = customerId;
         this.name = name;
         this.email = email;
@@ -41,6 +43,10 @@ public class MobileAuthResponse {
         return email;
     }
 
+    public String getToken() {
+        return token;
+    }
+
     public String getNoHp() {
         return noHp;
     }
@@ -63,6 +69,10 @@ public class MobileAuthResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setNoHp(String noHp) {

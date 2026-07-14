@@ -1,6 +1,7 @@
 package com.jeky.backend.service;
 
 import com.jeky.backend.model.AdminUser;
+import com.jeky.backend.model.Customer;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -18,8 +19,7 @@ public class JwtService {
 
     public JwtService(
             @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.expiration-ms}") long expirationTime
-    ) {
+            @Value("${jwt.expiration-ms}") long expirationTime) {
         this.secretKey = secretKey;
         this.expirationTime = expirationTime;
     }
@@ -30,6 +30,20 @@ public class JwtService {
                 .claim("id", adminUser.getId())
                 .claim("username", adminUser.getUsername())
                 .claim("role", adminUser.getRole().name())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String generateCustomerToken(Customer customer) {
+        return Jwts.builder()
+                .subject(customer.getEmail() != null ? customer.getEmail() : customer.getNoHp())
+                .claim("id", customer.getId())
+                .claim("name", customer.getName())
+                .claim("email", customer.getEmail())
+                .claim("noHp", customer.getNoHp())
+                .claim("role", "CUSTOMER")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey())

@@ -4,6 +4,10 @@ import com.jeky.backend.dto.MobileAuthResponse;
 import com.jeky.backend.dto.MobileLoginRequest;
 import com.jeky.backend.dto.MobileRegisterRequest;
 import com.jeky.backend.model.Customer;
+import com.jeky.backend.service.JwtService;
+
+import io.jsonwebtoken.Jwt;
+
 import com.jeky.backend.repository.CustomerRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,10 +16,12 @@ import org.springframework.stereotype.Service;
 public class MobileAuthService {
 
     private final CustomerRepository customerRepository;
+    private final JwtService jwtService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public MobileAuthService(CustomerRepository customerRepository) {
+    public MobileAuthService(CustomerRepository customerRepository, JwtService jwtService) {
         this.customerRepository = customerRepository;
+        this.jwtService = jwtService;
     }
 
     public MobileAuthResponse register(MobileRegisterRequest request) {
@@ -67,6 +73,7 @@ public class MobileAuthService {
         return new MobileAuthResponse(
                 true,
                 "Registrasi berhasil",
+                null,
                 savedCustomer.getId(),
                 savedCustomer.getName(),
                 savedCustomer.getEmail(),
@@ -100,9 +107,12 @@ public class MobileAuthService {
             return failed("Kata sandi salah");
         }
 
+        String token = jwtService.generateCustomerToken(customer);
+
         return new MobileAuthResponse(
                 true,
                 "Login berhasil",
+                token,
                 customer.getId(),
                 customer.getName(),
                 customer.getEmail(),
@@ -113,6 +123,7 @@ public class MobileAuthService {
         return new MobileAuthResponse(
                 false,
                 message,
+                null,
                 null,
                 null,
                 null,
