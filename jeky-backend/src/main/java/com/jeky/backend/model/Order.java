@@ -24,6 +24,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "customer_id")
+    private Long customerId;
+
     @NotBlank
     private String customerName;
 
@@ -61,6 +64,10 @@ public class Order {
         return id;
     }
 
+    public Long getCustomerId() {
+        return customerId;
+    }
+
     public String getCustomerName() {
         return customerName;
     }
@@ -95,6 +102,10 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public void setCustomerName(String customerName) {

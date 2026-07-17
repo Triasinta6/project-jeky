@@ -8,6 +8,9 @@ public class CreateOrderRequest {
     @NotNull
     private Long layananId;
 
+    @NotNull
+    private Long customerId;
+
     @NotBlank
     private String customerName;
 
@@ -24,6 +27,10 @@ public class CreateOrderRequest {
 
     public Long getLayananId() {
         return layananId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
     }
 
     public String getCustomerName() {
@@ -48,6 +55,10 @@ public class CreateOrderRequest {
 
     public void setLayananId(Long layananId) {
         this.layananId = layananId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public void setCustomerName(String customerName) {

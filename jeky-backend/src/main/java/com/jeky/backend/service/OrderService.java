@@ -42,6 +42,7 @@ public class OrderService {
 
         Order order = new Order();
         order.setLayanan(layanan);
+        order.setCustomerId(request.getCustomerId());
         order.setCustomerName(request.getCustomerName());
         order.setPhoneNumber(request.getPhoneNumber());
         order.setPickupAddress(request.getPickupAddress());
