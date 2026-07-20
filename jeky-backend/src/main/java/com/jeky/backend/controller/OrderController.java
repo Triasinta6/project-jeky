@@ -43,12 +43,16 @@ public class OrderController {
         return ResponseEntity.ok(orderService.create(request));
     }
 
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<OrderResponse>> getOrdersByCustomerId(@PathVariable Long customerId) {
+        return ResponseEntity.ok(orderService.getOrdersByCustomerId(customerId));
+    }
+
     @PutMapping("/{id}/status")
     public ResponseEntity<OrderResponse> updateStatus(
             @PathVariable Long id,
             @RequestParam(required = false) String status,
-            @RequestBody(required = false) UpdateOrderStatusRequest request
-    ) {
+            @RequestBody(required = false) UpdateOrderStatusRequest request) {
         UpdateOrderStatusRequest updateRequest = request == null ? new UpdateOrderStatusRequest() : request;
         if (updateRequest.getStatus() == null) {
             updateRequest.setStatus(status);

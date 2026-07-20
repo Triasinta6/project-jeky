@@ -37,6 +37,13 @@ public class OrderService {
                 .toList();
     }
 
+    public List<OrderResponse> getOrdersByCustomerId(Long customerId) {
+        return orderJekyRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
+                .stream()
+                .map(OrderResponse::new)
+                .toList();
+    }
+
     public OrderResponse create(CreateOrderRequest request) {
         Layanan layanan = layananService.findEntityById(request.getLayananId());
 

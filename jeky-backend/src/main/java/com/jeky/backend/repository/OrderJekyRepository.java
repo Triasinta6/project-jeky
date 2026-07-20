@@ -8,16 +8,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderJekyRepository extends JpaRepository<Order, Long> {
-    List<Order> findByStatus(OrderStatus status);
+        List<Order> findByStatus(OrderStatus status);
 
-    long countByStatus(OrderStatus status);
+        List<Order> findByCustomerIdOrderByCreatedAtDesc(Long customerId);
 
-    long countByCreatedAtGreaterThanEqualAndCreatedAtLessThan(
-            LocalDateTime startDate,
-            LocalDateTime endDate);
+        long countByStatus(OrderStatus status);
 
-    long countByStatusAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(
-            OrderStatus status,
-            LocalDateTime startDate,
-            LocalDateTime endDate);
+        long countByCreatedAtGreaterThanEqualAndCreatedAtLessThan(
+                        LocalDateTime startDate,
+                        LocalDateTime endDate);
+
+        long countByStatusAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(
+                        OrderStatus status,
+                        LocalDateTime startDate,
+                        LocalDateTime endDate);
 }
