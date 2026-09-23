@@ -9,19 +9,31 @@ import com.jeky.backend.service.JwtService;
 import io.jsonwebtoken.Jwt;
 
 import com.jeky.backend.repository.CustomerRepository;
+import com.jeky.backend.repository.PasswordResetOtpRepository;
+import com.jeky.backend.model.PasswordResetOtp;
+import com.jeky.backend.dto.ForgotPasswordRequest;
+import com.jeky.backend.dto.ResetPasswordRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Random;
 @Service
 public class MobileAuthService {
 
     private final CustomerRepository customerRepository;
     private final JwtService jwtService;
+    private final PasswordResetOtpRepository otpRepository;
+    private final EmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public MobileAuthService(CustomerRepository customerRepository, JwtService jwtService) {
+    public MobileAuthService(CustomerRepository customerRepository, JwtService jwtService, 
+                             PasswordResetOtpRepository otpRepository, EmailService emailService) {
         this.customerRepository = customerRepository;
         this.jwtService = jwtService;
+        this.otpRepository = otpRepository;
+        this.emailService = emailService;
     }
 
     public MobileAuthResponse register(MobileRegisterRequest request) {
@@ -117,6 +129,87 @@ public class MobileAuthService {
                 customer.getName(),
                 customer.getEmail(),
                 customer.getNoHp());
+    }
+
+    public MobileAuthResponse forgotPassword(ForgotPasswordRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim();
+        if (email.isBlank()) {
+            return failed("Email wajib diisi");
+        }
+
+        Customer customer = customerRepository.findByEmailOrNoHp(email, email).orElse(null);
+        if (customer == null || !email.equals(customer.getEmail())) {
+            return failed("Email tidak terdaftar");
+        }
+        if (customer.getAktif() != null && !customer.getAktif()) {
+            return failed("Akun tidak aktif");
+        }
+
+        // Generate 6 digit OTP
+        String otp = String.format("%06d", new Random().nextInt(999999));
+        
+        // Hash OTP and save
+        PasswordResetOtp resetOtp = new PasswordResetOtp();
+        resetOtp.setCustomer(customer);
+        resetOtp.setOtpHash(passwordEncoder.encode(otp));
+        resetOtp.setExpiryDate(LocalDateTime.now().plusMinutes(10));
+        resetOtp.setUsed(false);
+        otpRepository.save(resetOtp);
+
+        // Send Email
+        try {
+            emailService.sendOtpEmail(email, otp);
+        } catch (Exception e) {
+            return failed("Gagal mengirim email OTP: " + e.getMessage());
+        }
+
+        return new MobileAuthResponse(true, "OTP berhasil dikirim ke email", null, null, null, null, null);
+    }
+
+    public MobileAuthResponse resetPassword(ResetPasswordRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim();
+        if (email.isBlank()) {
+            return failed("Email wajib diisi");
+        }
+        if (request.getOtp() == null || request.getOtp().isBlank()) {
+            return failed("OTP wajib diisi");
+        }
+        if (request.getNewPassword() == null || request.getNewPassword().length() < 8) {
+            return failed("Password baru minimal 8 karakter");
+        }
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            return failed("Konfirmasi password tidak cocok");
+        }
+
+        Customer customer = customerRepository.findByEmailOrNoHp(email, email).orElse(null);
+        if (customer == null || !email.equals(customer.getEmail())) {
+            return failed("Email tidak terdaftar");
+        }
+
+        Optional<PasswordResetOtp> otpOpt = otpRepository.findTopByCustomerOrderByExpiryDateDesc(customer);
+        if (otpOpt.isEmpty()) {
+            return failed("Tidak ada permintaan OTP");
+        }
+
+        PasswordResetOtp resetOtp = otpOpt.get();
+        if (resetOtp.isUsed()) {
+            return failed("OTP sudah digunakan");
+        }
+        if (LocalDateTime.now().isAfter(resetOtp.getExpiryDate())) {
+            return failed("OTP sudah kadaluarsa");
+        }
+        if (!passwordEncoder.matches(request.getOtp(), resetOtp.getOtpHash())) {
+            return failed("OTP tidak valid");
+        }
+
+        // Valid OTP, proceed to update password
+        customer.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        customerRepository.save(customer);
+
+        resetOtp.setUsed(true);
+        otpRepository.save(resetOtp);
+
+        return new MobileAuthResponse(true, "Password berhasil diubah", null, null, null, null, null);
     }
 
     private MobileAuthResponse failed(String message) {
